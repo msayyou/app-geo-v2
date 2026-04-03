@@ -5,6 +5,10 @@
 # Déploiement : streamlit run app_v2.py
 # Cloud       : push sur GitHub → Streamlit Community Cloud
 # =============================================================================
+import subprocess, sys
+subprocess.run([sys.executable, "-m", "pip", "install",
+  "plotly", "folium", "streamlit-folium",
+  "libpysal", "esda", "mgwr"], check=True)
 
 import streamlit as st
 import numpy as np
