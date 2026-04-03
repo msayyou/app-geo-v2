@@ -26,8 +26,8 @@ from scipy.stats import gaussian_kde
 from scipy.spatial import cKDTree
 from libpysal.weights import DistanceBand
 from esda.moran import Moran, Moran_Local
-from mgwr.gwr import GWR
-from mgwr.sel_bw import Sel_BW
+# from mgwr.gwr import GWR
+# from mgwr.sel_bw import Sel_BW
 from sklearn.preprocessing import StandardScaler
 import io
 import warnings
