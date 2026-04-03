@@ -14,4 +14,4 @@ shapely==2.0.4
 geopandas==0.14.4
 plotly>=5.0.0
 streamlit>=1.40.0
-
+plotly==5.20.0
