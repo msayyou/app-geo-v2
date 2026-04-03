@@ -24,25 +24,10 @@ from sklearn.preprocessing import StandardScaler
 import io
 import warnings
 warnings.filterwarnings("ignore")
-import streamlit as st
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
-import seaborn as sns
-import geopandas as gpd
-from shapely.geometry import Point
-import folium
-from folium.plugins import HeatMap, MarkerCluster
-from streamlit_folium import st_folium
-import plotly.graph_objects as go
-import plotly.express as px
-from scipy.spatial import cKDTree
-from scipy.stats import gaussian_kde, linregress
-from libpysal.weights import DistanceBand
-from esda.moran import Moran, Moran_Local
-from sklearn.preprocessing import StandardScaler
-import warnings
+import subprocess, sys
+subprocess.run([sys.executable, "-m", "pip", "install",
+  "plotly", "folium", "streamlit-folium",
+  "libpysal", "esda", "mgwr"], check=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIG
