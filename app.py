@@ -169,30 +169,52 @@ def validate_upload(df):
 
 @st.cache_data
 def compute_lisa(df_hash, adr_values, lats, lons):
+    # Imports locaux — nécessaires pour Streamlit Cloud
+    from libpysal.weights import DistanceBand as DB
+    from esda.moran import Moran_Local as ML
+    import numpy as _np
     coords = list(zip(lons, lats))
+
+    # Seuil adaptatif : distance médiane entre voisins × 3
+    # Évite les îlots isolés sur les petits datasets (<100 hôtels)
+    n = len(coords)
+    if n < 50:
+        threshold = 0.05      # ~5 km — large pour petits marchés
+    elif n < 150:
+        threshold = 0.035
+    else:
+        threshold = 0.025
+
     try:
-        w = DistanceBand(coords, threshold=0.025, binary=False)
+        w = DB(coords, threshold=threshold, binary=False)
         w.transform = "r"
-        ml = Moran_Local(adr_values, w, permutations=499)
+        ml = ML(adr_values, w, permutations=499)
         sig = ml.p_sim < 0.05
         q   = ml.q
-        return np.where(~sig,"NS",np.where(q==1,"HH",np.where(q==3,"LL",np.where(q==4,"HL","LH"))))
+        return _np.where(~sig,"NS",_np.where(q==1,"HH",_np.where(q==3,"LL",_np.where(q==4,"HL","LH"))))
     except Exception:
-        return np.full(len(adr_values), "NS")
+        return _np.full(len(adr_values), "NS")
 
 @st.cache_data
 def compute_gwr(df_hash, y_vals, X_vals, lons, lats):
+    # Imports locaux — nécessaires pour Streamlit Cloud (cache isolé)
+    try:
+        from mgwr.gwr import GWR
+        from mgwr.sel_bw import Sel_BW
+        from sklearn.preprocessing import StandardScaler as SS
+    except ImportError as e:
+        return None, None, None, None, str(e)
+
     coords = np.array(list(zip(lons, lats)))
-    y      = np.array(y_vals).reshape(-1,1)
-    X_sc   = StandardScaler().fit_transform(np.array(X_vals))
-    X_c    = np.hstack([np.ones((len(y),1)), X_sc])
+    y      = np.array(y_vals).reshape(-1, 1)
+    X_sc   = SS().fit_transform(np.array(X_vals))
+    X_c    = np.hstack([np.ones((len(y), 1)), X_sc])
     try:
         bw  = Sel_BW(coords, y, X_c, kernel="bisquare").search()
         res = GWR(coords, y, X_c, bw=bw, kernel="bisquare").fit()
         return bw, res.params, res.localR2, res.predy.flatten(), res.resid_response.flatten()
     except Exception as e:
-        st.error(f"Erreur GWR : {e}")
-        return None, None, None, None, None
+        return None, None, None, None, str(e)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SIDEBAR
@@ -364,6 +386,8 @@ def page_gwr(df):
         )
 
     if bw is None:
+        st.error(f"Erreur GWR : {resid}")
+        st.info("Causes fréquentes : dataset trop petit (<30), colonnes manquantes (occ, rooms), ou package mgwr non installé.")
         return
 
     df = df.copy()
