@@ -1,0 +1,28 @@
+# Core
+streamlit==1.32.2
+python-dateutil>=2.8.2
+
+# Data processing
+numpy==1.26.4
+pandas==2.2.1
+
+# Visualization (with explicit dependencies)
+plotly==5.20.0
+kaleido==0.2.1
+plotly-express==0.4.1
+
+# Geospatial
+folium==0.16.0
+streamlit-folium==0.20.0
+shapely==2.0.4
+geopandas==0.14.4
+
+# Statistical/Spatial Analysis
+scipy==1.13.0
+scikit-learn==1.4.2
+libpysal==4.9.2
+esda==2.5.0
+mgwr==2.2.1
+
+# Utilities
+matplotlib==3.8.4
