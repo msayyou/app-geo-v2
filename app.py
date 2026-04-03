@@ -24,10 +24,6 @@ from sklearn.preprocessing import StandardScaler
 import io
 import warnings
 warnings.filterwarnings("ignore")
-import subprocess, sys
-subprocess.run([sys.executable, "-m", "pip", "install",
-  "plotly", "folium", "streamlit-folium",
-  "libpysal", "esda", "mgwr"], check=True)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIG
