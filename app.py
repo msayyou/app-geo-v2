@@ -5,6 +5,15 @@
 # Déploiement : streamlit run app_v2.py
 # Cloud       : push sur GitHub → Streamlit Community Cloud
 # =============================================================================
+import sys
+import subprocess
+
+# Ensure plotly is installed
+try:
+    import plotly
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "plotly", "kaleido"])
+
 import streamlit as st
 import numpy as np
 import pandas as pd
