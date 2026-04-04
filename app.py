@@ -210,7 +210,13 @@ def compute_gwr(df_hash, y_vals, X_vals, lons, lats):
     X_sc   = SS().fit_transform(np.array(X_vals))
     X_c    = np.hstack([np.ones((len(y), 1)), X_sc])
     try:
-        bw  = Sel_BW(coords, y, X_c, kernel="bisquare").search()
+        n = len(y)
+        bw_min = max(10, int(n * 0.3))   # au moins 30% des points
+        bw_max = n - 1                    # jamais plus que n-1 voisins
+        bw  = Sel_BW(coords, y, X_c, kernel="bisquare",
+                     fixed=False).search(
+                         search_method="golden_section",
+                         bw_min=bw_min, bw_max=bw_max)
         res = GWR(coords, y, X_c, bw=bw, kernel="bisquare").fit()
         return bw, res.params, res.localR2, res.predy.flatten(), res.resid_response.flatten()
     except Exception as e:
